@@ -9,22 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function register(Request $request)
+     public function store(StoreUser $request)
     {
-        
-        return User::all();
-    }
-
-    public function store(StoreUser $request)
-    {
-        
         $user = new User;
         $user->email = $request->email;
         $user->password = $request->password;
         $user->save();
         
         $accessToken = $user->createToken("authToken")->accessToken;
-        // dd($accessToken);
-        return response()->json([201, "access_token" => $accessToken]);
+        return response()->json(["access_token" => $accessToken], 201);
     }
 }
