@@ -1,20 +1,26 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\StoreUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
-     public function store(StoreUser $request)
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
     {
-        $user = new User;
-        $user->email = $request->email;
-        $user->password = $request->password;
-        $user->save();
+        $this->userService = $userService;
+    }
+
+    public function store(StoreUser $request)
+    {
+        $user = $this->userService->createUser($request->validated());
         $accessToken = $user->createToken("authToken")->accessToken;
-        return response()->json(["access_token" => $accessToken], 201);
+        return response()->json(["token" => $accessToken], 201);
     }
 }
