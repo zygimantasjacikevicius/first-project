@@ -12,6 +12,7 @@ class CreateUserTest extends TestCase
     use RefreshDatabase;
     public function test_create_method()
     {
+        $this->artisan('passport:install');
         //create an instance of UserService through the ServiceContainer.
         $userService = app()->make(UserService::class);
 

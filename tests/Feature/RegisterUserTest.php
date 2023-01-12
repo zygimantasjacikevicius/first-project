@@ -12,7 +12,8 @@ class RegisterUserTest extends TestCase
 
     public function test_register_user()
     {
-        $this->artisan('passport:install');
+        $this->artisan('passport:install', ['--force' => true]);
+
         $data = [
 
             "email" => "arklys@gmail.com",
@@ -23,6 +24,10 @@ class RegisterUserTest extends TestCase
 
         $response = $this->json('POST', 'api/users', $data)->assertStatus(201);
 
-        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            "user" => [
+                "email",
+            ]
+        ]);
     }
 }
