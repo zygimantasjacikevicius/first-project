@@ -15,11 +15,9 @@ class RegisterUserTest extends TestCase
         $this->artisan('passport:install', ['--force' => true]);
 
         $data = [
-
             "email" => "arklys@gmail.com",
             'password' => '123456789',
             'password_confirmation' => "123456789",
-
         ];
 
         $response = $this->json('POST', 'api/users', $data)->assertStatus(201);

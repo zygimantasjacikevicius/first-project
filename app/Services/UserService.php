@@ -8,7 +8,6 @@ class UserService
 {
     public function createUser(array $userData)
     {
-        $user = User::create($userData);
-        return $user;
+        return User::create($userData);
     }
 }
