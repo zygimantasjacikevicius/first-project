@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -23,9 +24,10 @@ class CreateUserTest extends TestCase
         //call service method
         $createdUser = $userService->createUser($data);
 
-        //check all necessary changes and response.
-        // You can use any asserts you need. find them in Laravel documentation
-        $this->assertSame($data["email"], $createdUser->email, "does not have the same email"); //check Laravel documentation
-        // $this->assertDatabaseHas($use) //check Laravel documentation
+        $this->assertSame($data["email"], $createdUser->email, "does not have the same email");
+        $this->assertDatabaseHas('users', [
+            'email' => 'arklys@gmail.com'
+        ]);
+        $this->assertInstanceOf(User::class, $createdUser);
     }
 }
