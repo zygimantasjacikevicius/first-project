@@ -5,23 +5,42 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\User;
+use App\Services\UserService;
 
 class LoginTest extends TestCase
 {
     use RefreshDatabase;
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+
     public function test_user_login()
     {
         $this->artisan('passport:install', ['--force' => true]);
         $userService = app()->make(UserService::class);
+        $data = [
+            "email" => "arklys@gmail.com",
+            'password' => '123456789',
+        ];
 
-        $response = $this->json('POST', 'api/users', $data);
+        $userService->createUser($data);
+        $this->json('POST', 'api/users/login', $data);
+        $this->assertAuthenticated();
+    }
 
-        $response->assertStatus(200);
+    public function test_user_with_invalid_password()
+    {
+        $this->artisan('passport:install', ['--force' => true]);
+        $userService = app()->make(UserService::class);
+        $data = [
+            "email" => "arklys@gmail.com",
+            'password' => '123456789',
+        ];
+
+        $userService->createUser($data);
+
+        $this->post('api/users/login', [
+            'email' => 'arklys@gmail.com',
+            'password' => 'wrong-password',
+        ]);
+
+        $this->assertGuest();
     }
 }
