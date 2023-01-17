@@ -13,16 +13,16 @@ class ResetPasswordSent extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $userReset;
+    public $token;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($userReset)
+    public function __construct($token)
     {
-        $this->userReset = $userReset;
+        $this->token = $token;
     }
 
     /**
@@ -45,7 +45,7 @@ class ResetPasswordSent extends Mailable
     public function content()
     {
         return new Content(
-            markdown: 'emails.reset.password.sent',
+            markdown: 'resetPassword',
         );
     }
 
