@@ -9,7 +9,6 @@ use App\Http\Requests\StoreUser;
 use App\Mail\ResetPasswordSent;
 use App\Models\ResetPassword as ModelsResetPassword;
 use App\Models\User;
-use App\Services\NewPasswordService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
@@ -21,9 +20,9 @@ class UserController extends Controller
 {
     protected UserService $userService;
     protected ResetPasswordService $resetPasswordService;
-    protected NewPasswordService $newPasswordService;
+    protected ResetPasswordService $newPasswordService;
 
-    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService, NewPasswordService $newPasswordService)
+    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService, ResetPasswordService $newPasswordService)
     {
         $this->userService = $userService;
         $this->resetPasswordService = $resetPasswordService;

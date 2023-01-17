@@ -28,8 +28,7 @@ class TokenExpiration implements Rule
     public function passes($attribute, $value)
     {
         $time = Carbon::now()->subHour(2);
-        $resetPassword = ModelsResetPassword::where('token', $value)->first();
-        return $resetPassword->where('created_at', '>=', $time)->first() !== null;
+        return ModelsResetPassword::where('token', $value)->where('created_at', '>=', $time)->exists();
     }
 
     /**

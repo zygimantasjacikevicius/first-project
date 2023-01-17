@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use App\Services\NewPasswordService;
 use App\Services\ResetPasswordService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Services\UserService;
+use Faker\Factory;
 use Tests\TestCase;
 
 class ResetPasswordTest extends TestCase
@@ -16,30 +19,24 @@ class ResetPasswordTest extends TestCase
     {
         $this->artisan('passport:install', ['--force' => true]);
 
-        $userService = app()->make(UserService::class);
-        $data = [
-            "email" => "arklys@gmail.com",
-            'password' => '123456789',
-        ];
+        $createdUser = User::factory()->create();
+        $this->assertDatabaseHas('users', [
+            'email' => $createdUser->email
+        ]);
 
-        $createdUser = $userService->createUser($data);
-        $this->post('api/users/reset', [
-            'email' => 'arklys@gmail.com',
+        $this->withoutExceptionHandling()->post('api/users/resetpass', [
+            'email' => $createdUser->email,
         ])->assertStatus(200);
     }
 
     public function test_if_user_can_reset_password()
     {
         $this->artisan('passport:install', ['--force' => true]);
-        $userService = app()->make(UserService::class);
+
+        $createdUser = User::factory()->create();
+
         $passService = app()->make(ResetPasswordService::class);
 
-        $data = [
-            "email" => "arklys@gmail.com",
-            'password' => '123456789',
-        ];
-
-        $createdUser = $userService->createUser($data);
         $email = [
             "email" => $createdUser->email
         ];
@@ -50,7 +47,7 @@ class ResetPasswordTest extends TestCase
             'new_password' => 'newpassword'
         ];
 
-        $this->json('POST', 'api/users/update', $newPass)->assertStatus(200);
+        $this->json('POST', 'api/users/updatepass', $newPass)->assertStatus(200);
         $this->assertDatabaseMissing('users', [
             'password' => $createdUser->password
         ]);
