@@ -15,7 +15,7 @@ class ResetPasswordService
         $user = User::where('email', $userData['email'])->first();
 
         if (
-            !empty($user->resetPassword->token) && $user->resetPassword->where('created_at', '>=', $time)->first() !== null
+            !empty($user->resetPassword->token) && $user->resetPassword->where('created_at', '<=', $time)->first() !== null
         ) {
             $user->resetPassword->where('user_id', $user->id)->delete();
             $userReset = new ResetPassword();
