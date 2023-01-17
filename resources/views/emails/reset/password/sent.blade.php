@@ -1,12 +1,8 @@
 <x-mail::message>
     # Introduction
 
-    Your password reset token is: {{ $token }}
+    Your password reset token is {{ $userReset->token }}
 
-    <x-mail::button :url="''">
-        Button Text
-    </x-mail::button>
-
-    Thanks,<br>
+    Thanks,
     {{ config('app.name') }}
 </x-mail::message>

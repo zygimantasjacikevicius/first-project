@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginUser;
+use App\Http\Requests\NewPassword;
 use App\Http\Requests\ResetPassword;
 use App\Http\Requests\StoreUser;
 use App\Mail\ResetPasswordSent;
 use App\Models\ResetPassword as ModelsResetPassword;
 use App\Models\User;
+use App\Services\NewPasswordService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use App\Services\UserService;
 use App\Services\ResetPasswordService;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 
@@ -21,11 +21,13 @@ class UserController extends Controller
 {
     protected UserService $userService;
     protected ResetPasswordService $resetPasswordService;
+    protected NewPasswordService $newPasswordService;
 
-    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService)
+    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService, NewPasswordService $newPasswordService)
     {
         $this->userService = $userService;
         $this->resetPasswordService = $resetPasswordService;
+        $this->newPasswordService = $newPasswordService;
     }
 
     public function store(StoreUser $request)
@@ -50,27 +52,14 @@ class UserController extends Controller
 
     public function resetPassword(ResetPassword $request)
     {
-        $user = User::where('email', $request->email)->first();
-        $time = Carbon::now()->subHour(2);
-        // dd(!empty($user->resetPassword->token));
-        // dd($user->resetPassword->where('created_at', '<=', $time)->first() == null);
-        if (
-            !empty($user->resetPassword->token) && $user->resetPassword->where('created_at', '<=', $time)->first() == null
-        ) {
-            echo "hehe";
-            die;
-        } else {
-            echo "nope";
-            die;
-        }
-
         $userReset = $this->resetPasswordService->createReset($request->validated());
-        $userReset->token = Str::random(40);
-        $userReset->user_id = $user->id;
-        $userReset->save();
-
-
-
         Mail::to($request->email)->send(new ResetPasswordSent($userReset->token));
+        return response()->json(['success' => 'Your password token has been sent, please check your inbox'], 200);
+    }
+
+    public function newPassword(NewPassword $request)
+    {
+        $this->newPasswordService->newPassword($request->validated());
+        return response()->json(['success' => 'Your password has been changed'], 200);
     }
 }
