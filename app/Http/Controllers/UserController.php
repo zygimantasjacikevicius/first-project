@@ -22,11 +22,10 @@ class UserController extends Controller
     protected ResetPasswordService $resetPasswordService;
     protected ResetPasswordService $newPasswordService;
 
-    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService, ResetPasswordService $newPasswordService)
+    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService)
     {
         $this->userService = $userService;
         $this->resetPasswordService = $resetPasswordService;
-        $this->newPasswordService = $newPasswordService;
     }
 
     public function store(StoreUser $request)
@@ -58,7 +57,7 @@ class UserController extends Controller
 
     public function newPassword(NewPassword $request)
     {
-        $this->newPasswordService->newPassword($request->validated());
+        $this->resetPasswordService->newPassword($request->validated());
         return response()->json(['success' => 'Your password has been changed'], 200);
     }
 }

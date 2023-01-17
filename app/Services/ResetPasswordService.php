@@ -13,7 +13,7 @@ class ResetPasswordService
     {
         $user = User::where('email', $userData['email'])->first();
 
-        DB::table('reset_passwords')->where('user_id', $user->id)->delete(); //remove all exist tokens
+        DB::table('reset_passwords')->where('user_id', $user->id)->delete();
         return ResetPassword::create([
             'token' => Str::random(40),
             'user_id' => $user->id,
