@@ -6,6 +6,7 @@ use App\Http\Requests\LoginUser;
 use App\Http\Requests\NewPassword;
 use App\Http\Requests\ResetPassword;
 use App\Http\Requests\StoreUser;
+use App\Http\Requests\UpdateUser;
 use App\Mail\ResetPasswordSent;
 use App\Models\ResetPassword as ModelsResetPassword;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
 use App\Services\ResetPasswordService;
+use App\Services\UpdateUserService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 
@@ -21,11 +23,13 @@ class UserController extends Controller
     protected UserService $userService;
     protected ResetPasswordService $resetPasswordService;
     protected ResetPasswordService $newPasswordService;
+    protected UpdateUserService $updateUserService;
 
-    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService)
+    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService, UpdateUserService $updateUserService)
     {
         $this->userService = $userService;
         $this->resetPasswordService = $resetPasswordService;
+        $this->updateUserService = $updateUserService;
     }
 
     public function store(StoreUser $request)
@@ -59,5 +63,11 @@ class UserController extends Controller
     {
         $this->resetPasswordService->newPassword($request->validated());
         return response()->json(['success' => 'Your password has been changed'], 200);
+    }
+
+    public function update(UpdateUser $request)
+    {
+        $this->updateUserService->updateUser($request->validated());
+        return response()->json(['success' => 'User details have been updated'], 200);
     }
 }
