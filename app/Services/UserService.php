@@ -12,10 +12,8 @@ class UserService
         return User::create($userData);
     }
 
-    public function updateUser(array $userData)
+    public function updateUser(array $userData, User $user)
     {
-        $user = Auth::user();
-
         if (!empty($userData['new_password'])) {
             $user->password = $userData['new_password'];
         }
