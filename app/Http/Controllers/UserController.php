@@ -70,4 +70,17 @@ class UserController extends Controller
         $this->updateUserService->updateUser($request->validated());
         return response()->json(['success' => 'User details have been updated'], 200);
     }
+
+    public function viewAll()
+    {
+        $users = User::all();
+        return response()->json(['users' => $users->pluck('email')->toArray()], 200);
+    }
+
+    public function view(Request $request)
+    {
+        $user = Auth::user();
+        dd($user);
+        // return response()->json(['user' => ], 200);
+    }
 }
