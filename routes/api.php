@@ -25,3 +25,5 @@ Route::post('/users/login', [UserController::class, 'login']);
 Route::post('/users/resetpass', [UserController::class, 'resetPassword']);
 Route::post('/users/updatepass', [UserController::class, 'newPassword']);
 Route::middleware('auth:api')->put('/users', [UserController::class, 'update']);
+Route::get('/users', [UserController::class, 'viewAll']);
+Route::get('/users/{id}', [UserController::class, 'view']);
