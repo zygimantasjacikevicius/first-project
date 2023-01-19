@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\UpdateUser as RulesUpdateUser;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateUser extends FormRequest
 {
@@ -14,7 +14,7 @@ class UpdateUser extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->can('update', $this->user());
     }
 
     /**

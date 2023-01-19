@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
 use App\Services\ResetPasswordService;
-use App\Services\UpdateUserService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 
@@ -23,13 +22,12 @@ class UserController extends Controller
     protected UserService $userService;
     protected ResetPasswordService $resetPasswordService;
     protected ResetPasswordService $newPasswordService;
-    protected UpdateUserService $updateUserService;
 
-    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService, UpdateUserService $updateUserService)
+
+    public function __construct(UserService $userService, ResetPasswordService $resetPasswordService)
     {
         $this->userService = $userService;
         $this->resetPasswordService = $resetPasswordService;
-        $this->updateUserService = $updateUserService;
     }
 
     public function store(StoreUser $request)
@@ -67,7 +65,7 @@ class UserController extends Controller
 
     public function update(UpdateUser $request)
     {
-        $this->updateUserService->updateUser($request->validated());
+        $this->userService->updateUser($request->validated());
         return response()->json(['success' => 'User details have been updated'], 200);
     }
 }
