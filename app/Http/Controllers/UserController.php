@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GetYourUser;
 use App\Http\Requests\LoginUser;
 use App\Http\Requests\NewPassword;
 use App\Http\Requests\ResetPassword;
 use App\Http\Requests\StoreUser;
 use App\Http\Requests\UpdateUser;
+use App\Http\Resources\UserResource;
 use App\Mail\ResetPasswordSent;
 use App\Models\ResetPassword as ModelsResetPassword;
 use App\Models\User;
@@ -75,10 +77,8 @@ class UserController extends Controller
         return response()->json(['users' => $users->pluck('email')->toArray()], 200);
     }
 
-    public function view(Request $request)
+    public function view(GetYourUser $request)
     {
-        $user = Auth::user();
-        dd($user);
-        // return response()->json(['user' => ], 200);
+        return new UserResource(User::findOrFail($request->user()->id));
     }
 }
