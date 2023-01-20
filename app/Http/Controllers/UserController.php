@@ -6,6 +6,7 @@ use App\Http\Requests\LoginUser;
 use App\Http\Requests\NewPassword;
 use App\Http\Requests\ResetPassword;
 use App\Http\Requests\StoreUser;
+use App\Http\Requests\UpdateUser;
 use App\Mail\ResetPasswordSent;
 use App\Models\ResetPassword as ModelsResetPassword;
 use App\Models\User;
@@ -21,6 +22,7 @@ class UserController extends Controller
     protected UserService $userService;
     protected ResetPasswordService $resetPasswordService;
     protected ResetPasswordService $newPasswordService;
+
 
     public function __construct(UserService $userService, ResetPasswordService $resetPasswordService)
     {
@@ -59,5 +61,11 @@ class UserController extends Controller
     {
         $this->resetPasswordService->newPassword($request->validated());
         return response()->json(['success' => 'Your password has been changed'], 200);
+    }
+
+    public function update(UpdateUser $request)
+    {
+        $this->userService->updateUser($request->validated(), $request->user());
+        return response()->json(['success' => 'User details have been updated'], 200);
     }
 }
