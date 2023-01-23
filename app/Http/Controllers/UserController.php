@@ -10,7 +10,6 @@ use App\Http\Requests\ResetPassword;
 use App\Http\Requests\StoreUser;
 use App\Http\Requests\UpdateUser;
 use App\Http\Resources\UserResource;
-use App\Mail\DeleteUser;
 use App\Mail\ResetPasswordSent;
 use App\Models\ResetPassword as ModelsResetPassword;
 use App\Models\User;
@@ -20,8 +19,6 @@ use App\Services\UserService;
 use App\Services\ResetPasswordService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -83,15 +80,13 @@ class UserController extends Controller
 
     public function view(GetYourUser $request)
     {
-        return new UserResource(User::findOrFail($request->user()->id));
+        $userResource = new UserResource(User::findOrFail($request->user()->id));
+        return response()->json(['user' => $userResource]);
     }
 
     public function delete(DeleteYourUser $request)
     {
         $this->userService->deleteUser($request->validated(), $request->user());
-
-        Mail::to($request->user()->email)->send(new DeleteUser($request->user()));
-
         return response()->json(['success' => 'Your account is inactive and an email has been sent with your account info'], 200);
     }
 }

@@ -13,7 +13,6 @@ class DeleteYourUser extends FormRequest
      */
     public function authorize()
     {
-        $this->user()->findOrFail($this->route('id'));
         if ($this->user()->id != $this->route('id')) {
             return false;
         }

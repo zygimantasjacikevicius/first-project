@@ -9,20 +9,19 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Attachment;
 use Illuminate\Queue\SerializesModels;
+use App\Services\UserService;
 
 class DeleteUser extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $user;
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct($user)
+    public $pdf;
+
+    public function __construct($user, $pdf)
     {
         $this->user = $user;
+        $this->pdf = $pdf;
     }
 
     /**
@@ -57,7 +56,8 @@ class DeleteUser extends Mailable
     public function attachments()
     {
         return [
-            Attachment::fromPath(base_path('storage/app/public/user.pdf'))
+            Attachment::fromData(fn () => $this->pdf, 'user.pdf')
+                ->withMime('application/pdf'),
         ];
     }
 }
