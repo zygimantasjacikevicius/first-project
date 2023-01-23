@@ -92,6 +92,6 @@ class UserController extends Controller
 
         Mail::to($request->user()->email)->send(new DeleteUser($request->user()));
 
-        return response()->json(['success' => 'An email has been sent'], 200);
+        return response()->json(['success' => 'Your account is inactive and an email has been sent with your account info'], 200);
     }
 }
