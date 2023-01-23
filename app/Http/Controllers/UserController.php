@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteYourUser;
+use App\Http\Requests\GetYourUser;
 use App\Http\Requests\LoginUser;
 use App\Http\Requests\NewPassword;
 use App\Http\Requests\ResetPassword;
 use App\Http\Requests\StoreUser;
 use App\Http\Requests\UpdateUser;
+use App\Http\Resources\UserResource;
 use App\Mail\ResetPasswordSent;
 use App\Models\ResetPassword as ModelsResetPassword;
 use App\Models\User;
@@ -67,5 +70,23 @@ class UserController extends Controller
     {
         $this->userService->updateUser($request->validated(), $request->user());
         return response()->json(['success' => 'User details have been updated'], 200);
+    }
+
+    public function viewAll()
+    {
+        $users = User::all();
+        return response()->json(['users' => $users->pluck('email')->toArray()], 200);
+    }
+
+    public function view(GetYourUser $request)
+    {
+        $userResource = new UserResource(User::findOrFail($request->user()->id));
+        return response()->json(['user' => $userResource]);
+    }
+
+    public function delete(DeleteYourUser $request)
+    {
+        $this->userService->deleteUser($request->validated(), $request->user());
+        return response()->json(['success' => 'Your account is inactive and an email has been sent with your account info'], 200);
     }
 }

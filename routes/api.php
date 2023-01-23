@@ -25,3 +25,6 @@ Route::post('/users/login', [UserController::class, 'login']);
 Route::post('/users/resetpass', [UserController::class, 'resetPassword']);
 Route::post('/users/updatepass', [UserController::class, 'newPassword']);
 Route::middleware('auth:api')->put('/users', [UserController::class, 'update']);
+Route::get('/users', [UserController::class, 'viewAll']);
+Route::middleware('auth:api')->get('/users/{id}', [UserController::class, 'view']);
+Route::middleware('auth:api')->delete('/users/{id}', [UserController::class, 'delete']);
